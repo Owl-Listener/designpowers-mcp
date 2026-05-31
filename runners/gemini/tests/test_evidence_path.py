@@ -18,9 +18,17 @@ from designpowers_gemini.mcp import build_toolset
 
 
 def _structured(call_result):
-    """Pull structuredContent out of an ADK/MCP tool result (list[CallToolResult])."""
+    """Pull structuredContent out of an ADK tool result.
+
+    ADK 2.1's McpTool.run_async returns the tool's structuredContent dict directly
+    ({'results': [...], 'summary': {...}}). Older/other shapes (a list, or an object
+    exposing `.structuredContent`) are handled too so this stays robust across the
+    supported google-adk range.
+    """
     res = call_result[0] if isinstance(call_result, list) else call_result
-    return res.structuredContent
+    if hasattr(res, "structuredContent"):
+        return res.structuredContent
+    return res
 
 
 async def _run_palette(pairs):
