@@ -1,0 +1,22 @@
+[project]
+name = "designpowers-gemini"
+version = "0.1.0"
+description = "Designpowers v2 Gemini runner — a thin Google ADK adapter over the shared core. Loads agent contracts/personas and wires the MCP truth-layer servers; holds no design logic of its own."
+requires-python = ">=3.10"
+dependencies = [
+    "google-adk>=2.1.0,<3",
+    "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["designpowers_gemini"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
