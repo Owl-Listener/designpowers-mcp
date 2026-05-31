@@ -1,0 +1,38 @@
+name: Check Antigravity plugin
+
+# Validates the primary surface: the Designpowers Antigravity plugin is internally
+# consistent with the shared core (every agent has a contract + persona + Skill,
+# no orphan Skills, declared tools are real, the MCP server path resolves). Plus a
+# live MCP handshake proving the truth-layer answers over stdio the way Antigravity
+# will call it. Deterministic — no Antigravity install needed.
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - ".agents/plugins/**"
+      - "core/**"
+      - "mcp-tools/**"
+      - "scripts/check-antigravity-plugin.sh"
+      - ".github/workflows/check-antigravity-plugin.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - ".agents/plugins/**"
+      - "core/**"
+
+jobs:
+  plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install truth-layer deps
+        working-directory: mcp-tools/accessibility
+        run: npm install
+      - name: Plugin/core consistency
+        run: bash scripts/check-antigravity-plugin.sh
+      - name: Live MCP handshake (what Antigravity does)
+        run: node mcp-tools/accessibility/verify-mcp.mjs node mcp-tools/accessibility/server.js

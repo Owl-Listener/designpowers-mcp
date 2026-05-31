@@ -1,6 +1,6 @@
 {
-  "core_version": "0.1.0",
-  "description": "Designpowers shared core registry — the single source of truth every runner loads. Runners contain no design logic; they read this manifest to discover agents, their contracts/personas, the evidence schema they must emit, and the MCP truth-layer servers they need. All paths are relative to the repository root.",
+  "core_version": "0.2.0",
+  "description": "Designpowers shared core registry — the single source of truth every surface loads. Surfaces (Antigravity plugin Skills; the secondary ADK runner) contain no design logic; they read this manifest to discover agents, their contracts/personas, the evidence schema they must emit, and the MCP truth-layer servers they need. All paths are relative to the repository root.",
   "mcp_servers": {
     "designpowers-accessibility": {
       "description": "WCAG 2.2 colour-contrast truth layer. Returns measured ratios and AA/AAA pass/fail — evidence, not estimates.",
@@ -11,20 +11,93 @@
     }
   },
   "agents": {
+    "design-strategist": {
+      "description": "Upstream thinking — flows, IA, journey maps, personas, principles, direction.",
+      "contract": "core/agents/design-strategist/contract.md",
+      "persona": "agents/design-strategist.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": [],
+      "phase": "strategy"
+    },
+    "design-scout": {
+      "description": "Competitive/inclusion research and benchmarking; measures contrast when auditing competitors.",
+      "contract": "core/agents/design-scout/contract.md",
+      "persona": "agents/design-scout.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": ["designpowers-accessibility"],
+      "phase": "research"
+    },
+    "inspiration-scout": {
+      "description": "Aesthetic and interaction references matched to the brief and taste profile.",
+      "contract": "core/agents/inspiration-scout/contract.md",
+      "persona": "agents/inspiration-scout.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": [],
+      "phase": "inspiration"
+    },
+    "design-lead": {
+      "description": "Visual design execution; measures every colour choice against WCAG before handoff.",
+      "contract": "core/agents/design-lead/contract.md",
+      "persona": "agents/design-lead.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": ["designpowers-accessibility"],
+      "phase": "design"
+    },
+    "motion-designer": {
+      "description": "Motion and animation with reduced-motion safety commitments.",
+      "contract": "core/agents/motion-designer/contract.md",
+      "persona": "agents/motion-designer.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": [],
+      "phase": "design"
+    },
+    "content-writer": {
+      "description": "Interface copy in plain language with cognitive accessibility built in.",
+      "contract": "core/agents/content-writer/contract.md",
+      "persona": "agents/content-writer.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": [],
+      "phase": "content"
+    },
+    "design-builder": {
+      "description": "Builds production output from specs; measures the contrast of its OWN rendered output.",
+      "contract": "core/agents/design-builder/contract.md",
+      "persona": "agents/design-builder.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": ["designpowers-accessibility"],
+      "phase": "build"
+    },
     "accessibility-critic": {
-      "description": "Reviews design output for inclusive design, backing every contrast claim with measured evidence from the WCAG MCP tool.",
+      "description": "Reviews output for inclusive design, backing every contrast claim with measured evidence from the WCAG MCP tool. The reference v2 agent.",
       "contract": "core/agents/accessibility-critic/contract.md",
       "persona": "agents/accessibility-reviewer.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
       "mcp_servers": ["designpowers-accessibility"],
+      "phase": "review",
       "model_hints": {
         "needs_vision": true,
         "needs_large_context": true,
-        "why": "Vision lets the critic read colours off a screenshot to propose pairs to check; large context lets it ingest a whole DESIGN.md palette at once. Both only PROPOSE what to measure — the MCP tool supplies the truth."
+        "why": "Vision lets the critic read colours off a screenshot to propose pairs; large context lets it ingest a whole DESIGN.md palette. Both only PROPOSE what to measure — the MCP tool supplies the truth."
       },
       "conformance": [
         "core/conformance/scenarios/accessibility-critic.contrast.json"
       ]
+    },
+    "design-critic": {
+      "description": "Reviews craft/brief/plan/principles; measures contrast only where a craft point is contrast-checkable.",
+      "contract": "core/agents/design-critic/contract.md",
+      "persona": "agents/design-critic.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": ["designpowers-accessibility"],
+      "phase": "review"
+    },
+    "heuristic-evaluator": {
+      "description": "Nielsen's 10 heuristics + cognitive walkthroughs. Usability judgment; no truth tool yet.",
+      "contract": "core/agents/heuristic-evaluator/contract.md",
+      "persona": "agents/heuristic-evaluator.md",
+      "evidence_schema": "core/schemas/evidence.schema.json",
+      "mcp_servers": [],
+      "phase": "review"
     }
   }
 }

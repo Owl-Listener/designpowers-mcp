@@ -1,9 +1,78 @@
 # Designpowers v2 Architecture
 
-> **Status:** v2 in progress. This document describes the target architecture and
-> records the decisions behind it. The first vertical slice — the **accessibility
-> critic** on the **Gemini (Google ADK)** runner — is implemented; everything else
-> is described here so the shape is fixed before more is built.
+> **Status:** v2 in progress. **Primary surface = Google Antigravity** (Skills +
+> the MCP truth-layer, orchestrated by Antigravity). All ten agents are built as
+> an Antigravity **plugin** at `.agents/plugins/designpowers/`, each a thin Skill
+> over the shared core. The **Google ADK runner** (`runners/gemini/`) is now a
+> **secondary** standalone surface — kept, not expanded. See "Distribution
+> surfaces" below.
+
+## Distribution surfaces (which thing runs where)
+
+Designpowers v2 ships the *same* shared core through more than one surface. The
+core is the single source of truth; each surface is a thin adapter.
+
+| Surface | Status | What it is | Runs inside Antigravity? |
+|---------|--------|-----------|--------------------------|
+| **Antigravity plugin** (`.agents/plugins/designpowers/`) | **PRIMARY** | The ten agents as **Skills**, a `/design` orchestration **workflow**, an always-on **rule** (the mandate), and `mcp_config.json` wiring the WCAG truth-layer. | **Yes** — this is the point. |
+| **MCP truth-layer** (`mcp-tools/`) | Durable asset | The WCAG contrast server. Reused **as-is** by every surface. | Yes (loaded via MCP). |
+| **ADK runner** (`runners/gemini/`) | **SECONDARY** | A standalone Google ADK program. **Kept, frozen — do not expand.** | **No** — ADK apps run standalone; Antigravity won't execute them. |
+
+> **Why the pivot.** ADK apps are standalone programs that *drive* agents from the
+> outside — Antigravity won't execute them. The path that genuinely runs *inside*
+> Antigravity is its own first-class extension surfaces: **Skills + rules +
+> workflows + MCP**. So the primary surface moved there. The ADK runner stays as a
+> non-Antigravity reference; the durable asset — the MCP truth-layer — is shared by
+> both unchanged.
+
+## The verified Antigravity mechanism
+
+> **Verification note (be honest about this):** the official docs at
+> `antigravity.google/docs/*` returned HTTP 403 to the build environment's fetcher,
+> so the specifics below are corroborated across multiple independent secondary
+> sources **and** the directory/format details the user pasted from the docs —
+> *not* read directly from a single primary page in-session. Anything that can only
+> be confirmed by the running host is marked **[confirm at checkpoint]** and is
+> exactly what the on-machine VERIFY step in `SETUP.md` exists to prove.
+
+How Antigravity expresses each thing we use:
+
+- **Plugins** bundle extensions into one auto-discovered package: a `plugin.json`
+  marker plus optional `skills/`, `rules/`, `mcp_config.json`, `hooks.json`.
+  Discovered at workspace `.agents/plugins/` (or `_agents/plugins/`) and globally
+  at `~/.gemini/config/plugins/`. Designpowers ships as exactly one such plugin.
+- **Skills** are directories with a `SKILL.md`: YAML frontmatter `name` (must match
+  the folder, lowercase-hyphen), `description` (drives when the agent activates),
+  and optional `tools`. The agent loads a Skill only when relevant.
+- **Rules** (`.agents/rules/` or a plugin's `rules/`) are Markdown treated as
+  persistent system instructions — used here for the always-on mandate.
+- **Workflows** (`.agents/workflows/` or a plugin's `workflows/`) are saved prompts
+  triggered with `/` — used here for `/design` (orchestration) and
+  `/verify-accessibility-tools`.
+- **MCP** loads from `mcp_config.json` (`mcpServers` → `command`/`args`), shared
+  across IDE/CLI, auto-reloaded. Our WCAG server drops in unchanged.
+- **Agents / orchestration:** Antigravity's orchestrator **spawns subagents
+  dynamically at runtime** from a high-level goal — you do **not** statically define
+  named sub-agents. **[confirm at checkpoint]** This is the key mechanism finding,
+  and it shapes the model below.
+
+### What this means for "10 agents"
+
+Because there is no static per-agent definition file, the durable, version-
+controlled unit each agent maps to is a **Skill**, not a "sub-agent." So:
+
+- **Each of the ten agents = one Skill** (`.agents/plugins/designpowers/skills/<id>/SKILL.md`),
+  a thin adapter that loads its persona (`agents/<id>.md`) + contract
+  (`core/agents/<id>/contract.md`) from the shared core and declares the truth
+  tools it may call.
+- **Orchestration = the `/design` workflow**, which sequences the agents through
+  the inclusive-design pipeline, director-driven (the user approves handoffs).
+- **Runtime parallelism** (e.g. the three reviewers running at once) comes from
+  Antigravity's dynamic subagents — the workflow asks for it; the host provides it.
+
+This is "prose for judgment, real tools for truth" expressed natively in
+Antigravity: judgment stays in the core personas; checkable claims (contrast) route
+to the MCP truth-layer; the Skill is only the wiring.
 
 ## The thesis: prose for judgment, real tools for truth
 
