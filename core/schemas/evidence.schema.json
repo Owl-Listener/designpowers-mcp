@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://designpowers.dev/schemas/evidence.schema.json",
+  "title": "Designpowers agent evidence envelope",
+  "description": "The output contract shared by every Designpowers v2 agent, honored identically by every runner. Narrative fields (summary, fix wording) are JUDGMENT and may differ between runners. The `evidence` block on each finding and the `tool_calls` array are TRUTH — copied verbatim from MCP tool results — and MUST be identical across runners for the same input. This is what the anti-drift conformance suite checks.",
+  "type": "object",
+  "required": ["agent", "contract_version", "verdict", "findings", "tool_calls"],
+  "additionalProperties": false,
+  "properties": {
+    "agent": {
+      "type": "string",
+      "description": "Agent id from core/registry.json, e.g. 'accessibility-critic'."
+    },
+    "contract_version": {
+      "type": "string",
+      "description": "Semver of the agent contract this envelope satisfies."
+    },
+    "verdict": {
+      "type": "string",
+      "enum": ["pass", "pass-with-issues", "fail"],
+      "description": "Overall judgment. 'fail' if any critical finding exists."
+    },
+    "summary": {
+      "type": "string",
+      "description": "JUDGMENT. 2-3 sentence human summary. May vary between runners."
+    },
+    "findings": {
+      "type": "array",
+      "description": "One entry per issue (or notable pass). Ordered most severe first.",
+      "items": {
+        "type": "object",
+        "required": ["severity", "claim", "evidence", "affected", "fix"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "major", "minor", "pass"],
+            "description": "critical = blocks access; major = significant degradation; minor = improvement; pass = verified good."
+          },
+          "claim": {
+            "type": "string",
+            "description": "JUDGMENT. What the critic asserts, in plain language."
+          },
+          "evidence": {
+            "$ref": "#/definitions/contrastEvidence",
+            "description": "TRUTH. The MCP tool result this claim rests on. Verbatim — must be identical across runners."
+          },
+          "affected": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "JUDGMENT. Who is harmed (disability types / situational contexts)."
+          },
+          "fix": {
+            "type": "string",
+            "description": "JUDGMENT. Specific, actionable remedy."
+          }
+        }
+      }
+    },
+    "tool_calls": {
+      "type": "array",
+      "description": "TRUTH. Every MCP tool result the agent obtained, verbatim structuredContent. The conformance suite asserts on this. An agent that asserts a contrast fact with no corresponding tool_call is violating its contract.",
+      "items": { "type": "object" }
+    }
+  },
+  "definitions": {
+    "contrastEvidence": {
+      "type": "object",
+      "required": ["source", "ratio", "passAA"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Which MCP tool produced this, e.g. 'designpowers-accessibility/check_contrast'."
+        },
+        "foreground": { "type": "string" },
+        "background": { "type": "string" },
+        "textSize": { "type": "string", "enum": ["normal", "large"] },
+        "ratio": { "type": "number" },
+        "aaThreshold": { "type": "number" },
+        "aaaThreshold": { "type": "number" },
+        "passAA": { "type": "boolean" },
+        "passAAA": { "type": "boolean" }
+      }
+    }
+  }
+}

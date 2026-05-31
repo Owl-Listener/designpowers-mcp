@@ -1,0 +1,20 @@
+{
+  "scenario": "accessibility-critic/contrast-low",
+  "agent": "accessibility-critic",
+  "description": "A two-pair palette: one passing (body text, black on white) and one failing (the grey Save button on a light grey surface). Every runner must measure the same ratios and pass/fail.",
+  "input": {
+    "pairs": [
+      { "foreground": "#1d2430", "background": "#ffffff", "textSize": "normal", "label": "body text" },
+      { "foreground": "#9aa0a6", "background": "#e8eaed", "textSize": "normal", "label": "Save button" }
+    ]
+  },
+  "expected_evidence": {
+    "tool": "check_palette",
+    "assertions": [
+      { "label": "Save button", "path": "ratio", "equals": 2.19 },
+      { "label": "Save button", "path": "passAA", "equals": false },
+      { "label": "body text", "path": "passAA", "equals": true }
+    ],
+    "summary": { "path": "failAA", "equals": 1 }
+  }
+}

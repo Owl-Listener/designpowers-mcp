@@ -1,0 +1,44 @@
+name: Check Gemini runner
+
+# Verifies the v2 Gemini (Google ADK) runner: it composes the accessibility-critic
+# from the shared core and gets MEASURED evidence from the WCAG MCP truth tool.
+# Deterministic — no Gemini API key required (no live LLM call).
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "runners/gemini/**"
+      - "core/**"
+      - "mcp-tools/**"
+      - ".github/workflows/check-gemini-runner.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "runners/gemini/**"
+      - "core/**"
+
+jobs:
+  gemini-runner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node is needed because the MCP truth-layer server (the tool the runner
+      # calls) is Node.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install MCP tool deps
+        working-directory: mcp-tools/accessibility
+        run: npm install
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install runner deps
+        working-directory: runners/gemini
+        run: pip install -r requirements.txt
+      - name: Run runner tests
+        working-directory: runners/gemini
+        run: pytest -q

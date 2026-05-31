@@ -1,0 +1,10 @@
+# Designpowers Gemini runner dependencies.
+# The MCP truth-layer servers are Node (see mcp-tools/); install those separately
+# with `npm install` in each tool dir.
+#
+# Verified against google-adk 2.1.0 + mcp 1.26.0. `mcp` is listed explicitly
+# because google-adk does not pull it in transitively (it gates the MCPToolset
+# import on mcp being present).
+google-adk>=2.1.0,<3
+mcp>=1.0.0
+pytest>=8.0
