@@ -10,7 +10,9 @@ An agent design team you control. 10 agents that run an inclusive design process
 
 Designpowers is an open, model-agnostic design workflow that gives you a team of 10 design agents. They discover, research, strategise, design, build, review, and hand off — with accessibility woven into every step. It keeps an observational record of how you design across projects (a mirror you can read, never something it imposes on the work), argues competing directions when you're unsure, and catches taste mismatches mid-build instead of at the end. You're the creative director. They work for you.
 
-**Works with any AI coding tool.** Designpowers is markdown files — skills, agents, and hooks. It ships as both a Claude Code plugin and a Gemini CLI extension, but the design knowledge works anywhere that reads markdown instructions: Cursor, Windsurf, Copilot, Aider, or any future tool. The design process is the product, not the platform.
+**Works with any AI coding tool.** Designpowers is markdown files — skills, agents, and hooks — plus an MCP **truth-layer** that *measures* the checkable claims (colour contrast today) instead of asserting them. The design knowledge works anywhere that reads markdown instructions: Cursor, Windsurf, Copilot, Aider, or any future tool. The design process is the product, not the platform.
+
+**Primary surface: Google Antigravity.** Designpowers v2 runs as a native Antigravity **plugin** (`.agents/plugins/designpowers/`) — all 10 specialist agents as Skills, the full 31-skill process discoverable, a `/design` orchestration workflow, and the WCAG MCP truth-layer wired in. See **[SETUP.md](SETUP.md)** to run it in Antigravity and **[ARCHITECTURE.md](ARCHITECTURE.md)** for the shared-core / thin-adapter design and the three distribution surfaces (Antigravity = primary; the Claude/Gemini packaging and the Google ADK runner are secondary). The design knowledge lives **once** in the shared core; every surface is a thin adapter over it.
 
 ## What You Get
 
@@ -149,6 +151,34 @@ Plus two coordination skills:
 **Your skills, amplified.** Designpowers doesn't replace your design judgement — it gives you a team that executes it.
 
 ## Installation
+
+### Google Antigravity (primary)
+
+Designpowers ships as an auto-discovered Antigravity **plugin**. There is no
+"install" command — you clone the repo, wire the truth-layer path once, and open
+the folder as your workspace.
+
+```bash
+git clone https://github.com/Owl-Listener/designpowers-mcp.git
+cd designpowers-mcp
+
+# install the WCAG truth-layer (a Node MCP server)
+cd mcp-tools/accessibility && npm install && cd ../..
+
+# fill the one required absolute path in the plugin's MCP config
+ROOT="$(pwd)"
+sed -i.bak "s|<DESIGNPOWERS_ROOT>|$ROOT|g" .agents/plugins/designpowers/mcp_config.json
+```
+
+Then **open `designpowers-mcp` as your Antigravity workspace** — the plugin loads
+from `.agents/plugins/designpowers/`. Verify before relying on it: run
+`/verify-accessibility-tools` in the agent panel and expect `2.19:1, FAIL AA`. To
+run the studio, run `/design`. Full steps, troubleshooting, and a pre-workshop
+VERIFY are in **[SETUP.md](SETUP.md)**.
+
+> To use it across all workspaces instead, copy `.agents/plugins/designpowers/`
+> into `~/.gemini/config/plugins/` (keep the MCP path pointing at the repo's
+> `mcp-tools/`).
 
 ### Claude Code
 
