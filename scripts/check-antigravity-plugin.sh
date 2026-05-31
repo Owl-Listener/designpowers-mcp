@@ -30,15 +30,23 @@ echo "Designpowers Antigravity plugin check"
 # Helper: read JSON via node
 jq_node() { node -e "const d=require('$1');$2"; }
 
-echo ""; echo "[1] Plugin marker + wiring files:"
-for f in "plugin.json" "mcp_config.json" "rules/designpowers-mandate.md"; do
-  if [ -f "$PLUGIN/$f" ]; then ok "$f"; else bad "missing $PLUGIN/$f"; fi
-done
+WORKFLOWS="$ROOT/.agents/workflows"
 
-echo ""; echo "[2] Workflows:"
-for f in "workflows/design.md" "workflows/verify-accessibility-tools.md"; do
+echo ""; echo "[1] Plugin marker + wiring files (Skills/Rules/MCP/Hooks only — per Antigravity plugin spec):"
+for f in "plugin.json" "mcp_config.json" "rules/designpowers-mandate.md" "hooks.json" "hooks/welcome-gate.mjs"; do
   if [ -f "$PLUGIN/$f" ]; then ok "$f"; else bad "missing $PLUGIN/$f"; fi
 done
+# hooks.json must be valid JSON and reference the welcome script
+if node -e "JSON.parse(require('fs').readFileSync('$PLUGIN/hooks.json','utf8'))" 2>/dev/null; then
+  grep -q "welcome-gate.mjs" "$PLUGIN/hooks.json" && ok "hooks.json valid + references welcome-gate.mjs" \
+    || bad "hooks.json doesn't reference welcome-gate.mjs"
+else bad "hooks.json is not valid JSON"; fi
+
+echo ""; echo "[2] Workflows live at .agents/workflows/ (NOT in the plugin — workflows aren't a plugin component):"
+for f in "design.md" "verify-accessibility-tools.md"; do
+  if [ -f "$WORKFLOWS/$f" ]; then ok ".agents/workflows/$f"; else bad "missing .agents/workflows/$f"; fi
+done
+if [ -d "$PLUGIN/workflows" ]; then bad "workflows/ found inside the plugin — Antigravity won't discover these; move to .agents/workflows/"; else ok "no stray workflows/ inside the plugin"; fi
 
 # Tools the MCP server advertises (from the registry)
 mapfile -t SERVER_TOOLS < <(jq_node "$REG" "console.log((d.mcp_servers['designpowers-accessibility'].tools||[]).join('\n'))")

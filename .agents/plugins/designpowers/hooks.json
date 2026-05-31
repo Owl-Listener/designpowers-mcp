@@ -1,0 +1,11 @@
+{
+  "designpowers-welcome": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "node .agents/plugins/designpowers/hooks/welcome-gate.mjs",
+        "timeout": 10
+      }
+    ]
+  }
+}

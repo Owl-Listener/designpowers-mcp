@@ -51,13 +51,18 @@ no SessionStart hook, so this rule is what enforces it:
 1. The first time a design-related message appears in a session, **read and follow
    `skills/using-designpowers/SKILL.md`** (discoverable as the `using-designpowers`
    pointer skill). Show the welcome (the bird), check for a returning user's taste
-   profile, and route **Build** vs **Review**.
+   profile, and route **Build** vs **Review**. Use the native `ask_question` tool
+   for the walkthrough offer and the Build/Review choice.
 2. Do **not** invoke any other Designpowers skill or agent until that welcome
    sequence has completed. If you catch yourself about to — stop and run it first.
 3. Run it once per session, not on every subsequent message.
 
-This is the same invariant the v1 `CLAUDE.md` enforced via a hook; here it lives in
-this always-on rule.
+**Enforcement (not just guidance):** this plugin ships a `PreInvocation` **hook**
+(`hooks.json` → `hooks/welcome-gate.mjs`) that injects this welcome instruction on
+the first model invocation of each conversation — the Antigravity equivalent of the
+v1 Claude Code SessionStart hook. The hook *fires* the reminder deterministically;
+this rule says what to *do* when it fires. (If hooks are disabled in a given setup,
+this always-on rule still carries the instruction.)
 
 ## Maintain design-state.md (the shared thread)
 

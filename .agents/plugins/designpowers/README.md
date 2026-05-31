@@ -15,16 +15,22 @@ designpowers/
 ├── mcp_config.json    # wires the WCAG truth-layer MCP server (truth)
 ├── rules/
 │   └── designpowers-mandate.md   # always-on: welcome/router, measure-don't-assert, design-state
-├── skills/                       # 41 discoverable skills (see two kinds below)
-│   ├── accessibility-critic/     #   agent skill (has .agent-skill marker + tools)
-│   │   ├── SKILL.md
-│   │   └── .agent-skill
-│   └── design-discovery/         #   process-skill pointer -> skills/design-discovery
-│       └── SKILL.md
-└── workflows/
-    ├── design.md                 # /design — the full inclusive-design pipeline
-    └── verify-accessibility-tools.md   # /verify the tools are wired before a run
+├── hooks.json                    # PreInvocation hook config (the welcome gate)
+├── hooks/
+│   └── welcome-gate.mjs          # injects "run the welcome first" on a conversation's 1st invocation
+└── skills/                       # 41 discoverable skills (see two kinds below)
+    ├── accessibility-critic/     #   agent skill (has .agent-skill marker + tools)
+    │   ├── SKILL.md
+    │   └── .agent-skill
+    └── design-discovery/         #   process-skill pointer -> skills/design-discovery
+        └── SKILL.md
 ```
+
+> **Workflows are NOT in the plugin.** Per the Antigravity plugin spec, a plugin
+> bundles only Skills, Rules, MCP servers, and Hooks — *not* workflows. The
+> `/design` and `/verify-accessibility-tools` workflows therefore live at
+> **`.agents/workflows/`** (workspace level), where Antigravity discovers slash
+> commands.
 
 The plugin's `skills/` holds **two kinds** of discoverable skill:
 

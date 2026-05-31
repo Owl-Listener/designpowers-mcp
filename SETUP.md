@@ -92,6 +92,29 @@ workspace.
 
 ---
 
+## 3.5 Pre-allow the truth-layer tools (so the demo never pauses)
+
+By default Antigravity treats **MCP tool calls as `Ask`** — the first time the
+accessibility critic calls `check_contrast`, the editor will pause and prompt you
+for approval. That's fine day-to-day, but on stage you want it to *just run*.
+
+Pre-approve the Designpowers truth-layer once, in **Agent Settings → Customizations
+→ Permissions**, by adding to the **Allow** list:
+
+```
+mcp(designpowers-accessibility/*)
+```
+
+This auto-approves both `check_contrast` and `check_palette` (and any future tool
+on that server) without prompting. Leave everything else at its default (`Ask`) —
+this grants only the read-only WCAG tools, nothing else.
+
+> If you'd rather approve interactively the first time, you can: when the prompt
+> card appears, click **Allow**. But for a repeatable workshop, the pre-allow above
+> removes the one mid-demo interruption.
+
+---
+
 ## 4. VERIFY (do this before the demo)
 
 **A. Quick, outside Antigravity** — the raw MCP handshake Antigravity performs:

@@ -34,7 +34,12 @@ throughout.
 6. **content-writer** — exact strings; reading-level target.
 7. **design-builder** — builds; **measures the contrast of its own rendered output**.
    → **Screenshot checkpoint:** show the user the built result before reviewers.
-8. **Parallel review** — dispatch simultaneously:
+8. **Parallel review** — dispatch the three reviewers simultaneously. Use
+   `invoke_subagent` (built-in, available on all plans) to spawn one subagent per
+   reviewer so they run concurrently with isolated context; each subagent follows
+   the matching skill (`accessibility-critic`, `design-critic`,
+   `heuristic-evaluator`). Do **not** rely on `/teamwork-preview` — it is Ultra-plan
+   only; plain `invoke_subagent` is enough and works everywhere.
    - **accessibility-critic** — MEASURES contrast (the truth verdict).
    - **design-critic** — craft/brief/plan (judgment).
    - **heuristic-evaluator** — Nielsen's 10 + cognitive walkthrough (judgment).
