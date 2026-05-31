@@ -62,10 +62,16 @@ for a in "${AGENTS[@]}"; do
   fi
 done
 
-echo ""; echo "[4] Plugin Skills -> registry (no orphans):"
+echo ""; echo "[4] Plugin Skills are either a registry agent OR a process-skill pointer:"
 for d in "$PLUGIN"/skills/*/; do
   s=$(basename "$d")
-  if printf '%s\n' "${AGENTS[@]}" | grep -qx "$s"; then ok "$s"; else bad "orphan Skill: $s (no registry agent)"; fi
+  if printf '%s\n' "${AGENTS[@]}" | grep -qx "$s"; then
+    ok "$s (agent skill)"
+  elif [ -d "$ROOT/skills/$s" ]; then
+    ok "$s (pointer -> skills/$s)"
+  else
+    bad "orphan Skill: $s (neither a registry agent nor a core process skill)"
+  fi
 done
 
 echo ""; echo "[5] Skill tool declarations are real server tools:"
@@ -95,6 +101,29 @@ case "$argpath" in
   *) bad "unexpected server arg: $argpath" ;;
 esac
 
+echo ""; echo "[7] Every core process skill has a discoverable pointer, and pointers are in sync:"
+missing=0
+for d in "$ROOT"/skills/*/; do
+  s=$(basename "$d")
+  [ -f "$ROOT/skills/$s/SKILL.md" ] || continue
+  # agent skills are hand-authored, not pointers — skip those names
+  [ -f "$PLUGIN/skills/$s/.agent-skill" ] && continue
+  if [ -f "$PLUGIN/skills/$s/SKILL.md" ]; then :; else bad "no pointer skill for core skills/$s"; missing=1; fi
+done
+[ "$missing" -eq 0 ] && ok "all core process skills have a pointer"
+if node "$ROOT/scripts/gen-antigravity-pointer-skills.mjs" --check >/tmp/ptr.out 2>&1; then
+  ok "pointers in sync with the core ($(grep -oE 'all [0-9]+' /tmp/ptr.out | head -1) skills)"
+else
+  bad "pointer skills are OUT OF SYNC — run: node scripts/gen-antigravity-pointer-skills.mjs"
+  sed 's/^/      /' /tmp/ptr.out
+fi
+
+echo ""; echo "[8] Welcome/router + design-state wired into the always-on rule:"
+RULE="$PLUGIN/rules/designpowers-mandate.md"
+grep -q "using-designpowers" "$RULE" && ok "router (using-designpowers) referenced in mandate" || bad "mandate doesn't enforce the welcome/router"
+grep -q "design-state.md" "$RULE" && ok "design-state lifecycle referenced in mandate" || bad "mandate doesn't maintain design-state.md"
+
 echo ""
 if [ "$fail" -ne 0 ]; then echo "FAIL — plugin/core inconsistencies found (see above)."; exit 1; fi
-echo "OK — Designpowers Antigravity plugin is consistent with the core (${#AGENTS[@]} agents)."
+nptr=$(find "$PLUGIN"/skills -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
+echo "OK — Designpowers Antigravity plugin consistent with the core (${#AGENTS[@]} agents + process pointers = $nptr discoverable skills)."

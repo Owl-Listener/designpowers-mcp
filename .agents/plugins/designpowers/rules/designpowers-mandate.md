@@ -41,3 +41,34 @@ between v1 (prose that *asserts* "looks accessible") and v2 (evidence that
 
 Designpowers is director-driven. Surface handoffs and decisions; let the user
 approve, correct, redirect, or skip. The user's word overrides any agent.
+
+## Welcome & router run FIRST (every session)
+
+Before responding to ANY design-related message — building, reviewing, or even a
+clarifying question — you MUST run the Designpowers welcome/router. Antigravity has
+no SessionStart hook, so this rule is what enforces it:
+
+1. The first time a design-related message appears in a session, **read and follow
+   `skills/using-designpowers/SKILL.md`** (discoverable as the `using-designpowers`
+   pointer skill). Show the welcome (the bird), check for a returning user's taste
+   profile, and route **Build** vs **Review**.
+2. Do **not** invoke any other Designpowers skill or agent until that welcome
+   sequence has completed. If you catch yourself about to — stop and run it first.
+3. Run it once per session, not on every subsequent message.
+
+This is the same invariant the v1 `CLAUDE.md` enforced via a hook; here it lives in
+this always-on rule.
+
+## Maintain design-state.md (the shared thread)
+
+The pipeline's agents coordinate through a shared `design-state.md` in the
+workspace. Follow `skills/design-state/SKILL.md` for its structure. The rule:
+
+- **Before dispatching any agent:** confirm `design-state.md` exists and is current
+  (initialise it during discovery if missing).
+- **After any agent completes:** update it with that agent's decisions, evidence,
+  and handoff notes (including the verbatim tool evidence from the truth layer).
+- If you reach the build/review phase and no `design-state.md` exists, something
+  was skipped — go back to discovery.
+
+A Designpowers session with no `design-state.md` is not running the process.

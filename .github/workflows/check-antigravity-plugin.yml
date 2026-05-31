@@ -32,6 +32,8 @@ jobs:
       - name: Install truth-layer deps
         working-directory: mcp-tools/accessibility
         run: npm install
+      - name: Pointer skills in sync with the core
+        run: node scripts/gen-antigravity-pointer-skills.mjs --check
       - name: Plugin/core consistency
         run: bash scripts/check-antigravity-plugin.sh
       - name: Live MCP handshake (what Antigravity does)

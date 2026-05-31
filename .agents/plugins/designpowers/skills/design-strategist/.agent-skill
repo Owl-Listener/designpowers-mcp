@@ -1,0 +1,1 @@
+Marker: hand-authored agent skill (a thin adapter over core/agents/design-strategist). The pointer-skill generator skips dirs containing this file so it never overwrites an agent skill.
