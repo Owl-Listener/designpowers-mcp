@@ -29,7 +29,7 @@ Designpowers is an open, model-agnostic design workflow that gives you a team of
 | **design-critic** | Reviews against brief, plan, principles; loops back with gaps |
 | **heuristic-evaluator** | Nielsen's 10 heuristics, cognitive walkthroughs, usability |
 
-**29 skills** that enforce a complete design workflow — from discovery through retrospective.
+**30 skills** that enforce a complete design workflow — from discovery through retrospective.
 
 **2 modes** — Direct (you approve every handoff) and Auto (agents run the pipeline, you review at the end).
 
