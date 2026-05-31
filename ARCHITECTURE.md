@@ -14,7 +14,7 @@ core is the single source of truth; each surface is a thin adapter.
 
 | Surface | Status | What it is | Runs inside Antigravity? |
 |---------|--------|-----------|--------------------------|
-| **Antigravity plugin** (`.agents/plugins/designpowers/`) | **PRIMARY** | The ten agents as **Skills**, a `/design` orchestration **workflow**, an always-on **rule** (the mandate), and `mcp_config.json` wiring the WCAG truth-layer. | **Yes** — this is the point. |
+| **Antigravity plugin** (`.agents/plugins/designpowers/`) | **PRIMARY** | The ten agents as **Skills** + 31 process-skill pointers, an always-on **rule** (the mandate), a **hook** (`hooks.json` → welcome gate), and `mcp_config.json` wiring the WCAG truth-layer. The `/design` + `/verify-accessibility-tools` **workflows** live at `.agents/workflows/` (workflows aren't a plugin component). | **Yes** — this is the point. |
 | **MCP truth-layer** (`mcp-tools/`) | Durable asset | The WCAG contrast server. Reused **as-is** by every surface. | Yes (loaded via MCP). |
 | **ADK runner** (`runners/gemini/`) | **SECONDARY** | A standalone Google ADK program. **Kept, frozen — do not expand.** | **No** — ADK apps run standalone; Antigravity won't execute them. |
 
@@ -46,15 +46,22 @@ How Antigravity expresses each thing we use:
   and optional `tools`. The agent loads a Skill only when relevant.
 - **Rules** (`.agents/rules/` or a plugin's `rules/`) are Markdown treated as
   persistent system instructions — used here for the always-on mandate.
-- **Workflows** (`.agents/workflows/` or a plugin's `workflows/`) are saved prompts
-  triggered with `/` — used here for `/design` (orchestration) and
-  `/verify-accessibility-tools`.
+- **Workflows** (`.agents/workflows/`) are saved prompts triggered with `/` — used
+  here for `/design` (orchestration) and `/verify-accessibility-tools`. Note:
+  workflows are **not** a plugin component (a plugin bundles only Skills, Rules, MCP
+  servers, and Hooks), so they live at the workspace `.agents/workflows/` level.
+- **Hooks** (`hooks.json` in the plugin) run scripts at execution-loop events. The
+  `PreInvocation` event can `injectSteps` before the model is called — used here to
+  fire the welcome/router deterministically on a conversation's first invocation
+  (the Antigravity equivalent of a SessionStart hook).
 - **MCP** loads from `mcp_config.json` (`mcpServers` → `command`/`args`), shared
   across IDE/CLI, auto-reloaded. Our WCAG server drops in unchanged.
 - **Agents / orchestration:** Antigravity's orchestrator **spawns subagents
-  dynamically at runtime** from a high-level goal — you do **not** statically define
-  named sub-agents. **[confirm at checkpoint]** This is the key mechanism finding,
-  and it shapes the model below.
+  dynamically at runtime** via `invoke_subagent` / `define_subagent` tools — you do
+  **not** statically define named sub-agents in a file. (Confirmed in the official
+  hooks tool list.) This is the key mechanism finding, and it shapes the model
+  below: the durable unit is the Skill; the `/design` workflow asks for parallel
+  reviewers and the host spawns them.
 
 ### What this means for "10 agents"
 

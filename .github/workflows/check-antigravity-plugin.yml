@@ -10,15 +10,16 @@ on:
   workflow_dispatch: {}
   pull_request:
     paths:
-      - ".agents/plugins/**"
+      - ".agents/**"
       - "core/**"
       - "mcp-tools/**"
       - "scripts/check-antigravity-plugin.sh"
+      - "scripts/gen-antigravity-pointer-skills.mjs"
       - ".github/workflows/check-antigravity-plugin.yml"
   push:
     branches: ["main"]
     paths:
-      - ".agents/plugins/**"
+      - ".agents/**"
       - "core/**"
 
 jobs:
