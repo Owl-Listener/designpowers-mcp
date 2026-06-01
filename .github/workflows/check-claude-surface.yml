@@ -1,0 +1,41 @@
+name: Check Claude surface
+
+# Validates the Designpowers Claude Code surface: the truth-layer is wired in
+# .mcp.json, CLAUDE.md carries the v2 measure-don't-assert mandate, the /design and
+# /verify commands point at the shared core, and every agent resolves to a real
+# persona. Plus a live MCP handshake. Deterministic — no Claude install needed.
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - ".claude/**"
+      - ".claude-plugin/**"
+      - "CLAUDE.md"
+      - ".mcp.json"
+      - "core/**"
+      - "mcp-tools/**"
+      - "scripts/check-claude-surface.sh"
+      - ".github/workflows/check-claude-surface.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - ".claude/**"
+      - "CLAUDE.md"
+      - ".mcp.json"
+
+jobs:
+  claude-surface:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install truth-layer deps
+        working-directory: mcp-tools/accessibility
+        run: npm install
+      - name: Claude surface consistency
+        run: bash scripts/check-claude-surface.sh
+      - name: Live MCP handshake (what Claude does)
+        run: node mcp-tools/accessibility/verify-mcp.mjs node mcp-tools/accessibility/server.js

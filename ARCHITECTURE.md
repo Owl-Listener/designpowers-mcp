@@ -12,11 +12,18 @@
 Designpowers v2 ships the *same* shared core through more than one surface. The
 core is the single source of truth; each surface is a thin adapter.
 
-| Surface | Status | What it is | Runs inside Antigravity? |
-|---------|--------|-----------|--------------------------|
-| **Antigravity plugin** (`.agents/plugins/designpowers/`) | **PRIMARY** | The ten agents as **Skills** + 36 process-skill pointers, an always-on **rule** (the mandate), a **hook** (`hooks.json` → welcome gate), and `mcp_config.json` wiring the WCAG truth-layer. The `/design` + `/verify-accessibility-tools` **workflows** live at `.agents/workflows/` (workflows aren't a plugin component). | **Yes** — this is the point. |
-| **MCP truth-layer** (`mcp-tools/`) | Durable asset | The WCAG contrast server. Reused **as-is** by every surface. | Yes (loaded via MCP). |
-| **ADK runner** (`runners/gemini/`) | **SECONDARY** | A standalone Google ADK program. **Kept, frozen — do not expand.** | **No** — ADK apps run standalone; Antigravity won't execute them. |
+| Surface | Status | What it is | Runs where? |
+|---------|--------|-----------|-------------|
+| **Antigravity plugin** (`.agents/plugins/designpowers/`) | **PRIMARY** | The ten agents as **Skills** + 36 process-skill pointers, an always-on **rule** (the mandate), a **hook** (`hooks.json` → welcome gate), and `mcp_config.json` wiring the WCAG truth-layer. The `/design` + `/verify-accessibility-tools` **workflows** live at `.agents/workflows/` (workflows aren't a plugin component). | **Inside Google Antigravity.** |
+| **Claude Code plugin** (`.claude-plugin/`, `CLAUDE.md`, `.claude/`, `.mcp.json`) | Built (v2) | The ten agents as Claude **subagents** (`agents/*.md`), the 36 skills read directly from root `skills/`, `CLAUDE.md` carries the measure-don't-assert mandate + welcome, a **SessionStart hook** (`hooks/`) fires the welcome, `.mcp.json` wires the WCAG truth-layer, and `/design` + `/verify-accessibility-tools` are slash commands in `.claude/commands/`. | **Inside Claude Code.** |
+| **MCP truth-layer** (`mcp-tools/`) | Durable asset | The WCAG contrast server. Reused **as-is** by every surface. | Loaded via MCP by both. |
+| **ADK runner** (`runners/gemini/`) | **SECONDARY** | A standalone Google ADK program. **Kept, frozen — do not expand.** | Standalone (beside, not inside, any IDE). |
+
+> **Two surfaces, one core, no collision.** Antigravity discovers `.agents/**` +
+> `mcp_config.json`; Claude Code reads `.claude*` + `CLAUDE.md` + `.mcp.json`. The
+> namespaces don't overlap, so both coexist in this one repo without interfering —
+> CI proves the shared core and the Antigravity surface are byte-identical when the
+> Claude surface changes.
 
 > **Why the pivot.** ADK apps are standalone programs that *drive* agents from the
 > outside — Antigravity won't execute them. The path that genuinely runs *inside*

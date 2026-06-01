@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "designpowers-accessibility": {
+      "command": "node",
+      "args": ["mcp-tools/accessibility/server.js"]
+    }
+  }
+}
