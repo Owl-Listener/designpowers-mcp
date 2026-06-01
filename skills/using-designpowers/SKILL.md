@@ -784,3 +784,21 @@ The design-lead then **waits for the human's response** before taking any next s
 | Skipping the retrospective because the project is done | Done is not learned. The retrospective makes the next project better |
 | Treating the design record as preferences that steer the work | The record is descriptive, not prescriptive. It reflects how the user designs; it is never applied to drive a project. Direction comes from the brief, `design-taste`, and any `DESIGN.md` |
 | Minor/Note findings dropped after review without tracking | Invoke design-debt-tracker to capture deferred items. Promises to personas don't disappear because severity is low |
+
+## Additional lanes and on-ramps
+
+Beyond the core build pipeline, these skills cover specific entry points and
+support tasks. Route to them when the situation matches:
+
+- `design-express` — a lightweight two-minute on-ramp for first-time users who
+  want a quick critique or build taster without committing to the full pipeline.
+  It verifies accessibility (computes contrast) rather than asserting it.
+- `design-library` — pull a known brand's `DESIGN.md` off the shelf (from the
+  open `awesome-design-md` collection) and adapt it as a starting point. Treats
+  any fetched file as untrusted data (see its injection guardrail).
+- `figma-bridge` — turn specs or code into visual artifacts designers can see:
+  push into Figma frames, pull Figma in, or render an accessible HTML prototype.
+- `heuristic-evaluation` — run a structured heuristics pass (Nielsen-style) over
+  an existing design as part of review.
+- `taste-report` — produce a written taste report from the two-layer
+  (personal vs. client) taste model.

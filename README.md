@@ -12,7 +12,7 @@ Designpowers is an open, model-agnostic design workflow that gives you a team of
 
 **Works with any AI coding tool.** Designpowers is markdown files — skills, agents, and hooks — plus an MCP **truth-layer** that *measures* the checkable claims (colour contrast today) instead of asserting them. The design knowledge works anywhere that reads markdown instructions: Cursor, Windsurf, Copilot, Aider, or any future tool. The design process is the product, not the platform.
 
-**Primary surface: Google Antigravity.** Designpowers v2 runs as a native Antigravity **plugin** (`.agents/plugins/designpowers/`) — all 10 specialist agents as Skills, the full 31-skill process discoverable, a `/design` orchestration workflow, and the WCAG MCP truth-layer wired in. See **[SETUP.md](SETUP.md)** to run it in Antigravity and **[ARCHITECTURE.md](ARCHITECTURE.md)** for the shared-core / thin-adapter design and the three distribution surfaces (Antigravity = primary; the Claude/Gemini packaging and the Google ADK runner are secondary). The design knowledge lives **once** in the shared core; every surface is a thin adapter over it.
+**Primary surface: Google Antigravity.** Designpowers v2 runs as a native Antigravity **plugin** (`.agents/plugins/designpowers/`) — all 10 specialist agents as Skills, the full 36-skill process discoverable, a `/design` orchestration workflow, and the WCAG MCP truth-layer wired in. See **[SETUP.md](SETUP.md)** to run it in Antigravity and **[ARCHITECTURE.md](ARCHITECTURE.md)** for the shared-core / thin-adapter design and the three distribution surfaces (Antigravity = primary; the Claude/Gemini packaging and the Google ADK runner are secondary). The design knowledge lives **once** in the shared core; every surface is a thin adapter over it.
 
 ## What You Get
 
@@ -31,7 +31,7 @@ Designpowers is an open, model-agnostic design workflow that gives you a team of
 | **design-critic** | Reviews against brief, plan, principles; loops back with gaps |
 | **heuristic-evaluator** | Nielsen's 10 heuristics, cognitive walkthroughs, usability |
 
-**31 skills** that enforce a complete design workflow — from discovery through retrospective.
+**36 skills** that enforce a complete design workflow — from discovery through retrospective.
 
 **2 lanes** — Build (design something new through the full pipeline) and Review (audit something you already have — a screenshot, URL, or code — through the reviewers, without the full build process).
 
