@@ -1,0 +1,20 @@
+{
+  "scenario": "heuristic-evaluator/touch-target",
+  "agent": "heuristic-evaluator",
+  "description": "Two controls: a 48px primary (passes AA) and a 20px close icon (fails AA 24px). Every surface must measure the same pass/fail geometry.",
+  "tool": "check_touch_targets",
+  "input": {
+    "targets": [
+      { "width": 48, "height": 48, "label": "primary" },
+      { "width": 20, "height": 20, "label": "close icon" }
+    ]
+  },
+  "expected_evidence": {
+    "tool": "check_touch_targets",
+    "assertions": [
+      { "label": "primary", "path": "passAA", "equals": true },
+      { "label": "close icon", "path": "passAA", "equals": false }
+    ],
+    "summary": { "path": "failAA", "equals": 1 }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "scenario": "motion-designer/motion-safety",
+  "agent": "motion-designer",
+  "description": "Two animations: a short fade with a reduced-motion fallback (safe) and a parallax without one (unsafe, 2.3.3). Every surface must reach the same safety verdict.",
+  "tool": "check_motion_safety",
+  "input": {
+    "animations": [
+      { "label": "fade", "durationSeconds": 0.3, "reducedMotionFallback": true },
+      { "label": "parallax", "durationSeconds": 0.5, "reducedMotionFallback": false }
+    ]
+  },
+  "expected_evidence": {
+    "tool": "check_motion_safety",
+    "assertions": [
+      { "label": "fade", "path": "safe", "equals": true },
+      { "label": "parallax", "path": "safe", "equals": false }
+    ],
+    "summary": { "path": "unsafe", "equals": 1 }
+  }
+}

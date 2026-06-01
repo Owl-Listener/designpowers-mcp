@@ -63,7 +63,10 @@
       "mcp_servers": [
         "designpowers-accessibility"
       ],
-      "phase": "design"
+      "phase": "design",
+      "conformance": [
+        "core/conformance/scenarios/motion-designer.motion-safety.json"
+      ]
     },
     "content-writer": {
       "description": "Interface copy in plain language with cognitive accessibility built in.",
@@ -73,7 +76,10 @@
       "mcp_servers": [
         "designpowers-accessibility"
       ],
-      "phase": "content"
+      "phase": "content",
+      "conformance": [
+        "core/conformance/scenarios/content-writer.reading-level.json"
+      ]
     },
     "design-builder": {
       "description": "Builds production output from specs; measures the contrast of its OWN rendered output.",
@@ -121,7 +127,10 @@
       "mcp_servers": [
         "designpowers-accessibility"
       ],
-      "phase": "review"
+      "phase": "review",
+      "conformance": [
+        "core/conformance/scenarios/heuristic-evaluator.touch-target.json"
+      ]
     }
   }
 }

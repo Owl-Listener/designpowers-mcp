@@ -2,6 +2,7 @@
   "scenario": "accessibility-critic/contrast-low",
   "agent": "accessibility-critic",
   "description": "A two-pair palette: one passing (body text, black on white) and one failing (the grey Save button on a light grey surface). Every runner must measure the same ratios and pass/fail.",
+  "tool": "check_palette",
   "input": {
     "pairs": [
       { "foreground": "#1d2430", "background": "#ffffff", "textSize": "normal", "label": "body text" },

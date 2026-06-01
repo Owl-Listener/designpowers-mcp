@@ -1,0 +1,39 @@
+name: Check conformance
+
+# The anti-drift guarantee: every Designpowers surface (Antigravity plugin, Claude
+# Code, the registry-canonical wiring) must produce BYTE-IDENTICAL measured evidence
+# for the same scenario input. Runs every conformance scenario against every
+# surface's truth-layer wiring over real MCP/stdio. Deterministic — no LLM/API key.
+# If any surface drifts, this fails.
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "core/conformance/**"
+      - "core/registry.json"
+      - "mcp-tools/**"
+      - ".agents/plugins/designpowers/mcp_config.json"
+      - ".mcp.json"
+      - "scripts/conformance.mjs"
+      - ".github/workflows/check-conformance.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "core/conformance/**"
+      - "mcp-tools/**"
+      - "scripts/conformance.mjs"
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install truth-layer deps
+        working-directory: mcp-tools/accessibility
+        run: npm install
+      - name: Run the cross-surface conformance suite
+        run: node scripts/conformance.mjs
