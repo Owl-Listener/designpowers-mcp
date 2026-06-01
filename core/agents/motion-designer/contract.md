@@ -3,7 +3,7 @@ agent: motion-designer
 contract_version: 1.0.0
 persona: agents/motion-designer.md
 evidence_schema: core/schemas/evidence.schema.json
-mcp_servers: []
+mcp_servers: [designpowers-accessibility]
 ---
 
 # Contract: motion-designer
@@ -20,18 +20,19 @@ supplies the motion judgment. This contract fixes the boundary.
 
 - **Judgment (prose, the majority):** purpose of motion, choreography, easing
   feel, whether an animation earns its place.
-- **Checkable (future truth tool):** vestibular-safety facts — does every
-  animation have a `prefers-reduced-motion` fallback, are durations within safe
-  bounds, is there looping/parallax risk. **No motion-safety truth tool exists
-  yet.** Until one lands, the motion-designer asserts a reduced-motion fallback
-  *exists* as a design commitment and flags it for the accessibility-critic to
-  confirm in the build — it does not claim a measurement.
+- **Checkable (route to the truth layer):** several vestibular-safety facts are
+  checkable against declared properties — call **`check_motion_safety`** with each
+  animation's spec (flashes/sec, loops, duration, whether a `prefers-reduced-motion`
+  fallback exists, whether it's essential/pausable). It enforces WCAG 2.3.1 (≤3
+  flashes/sec — seizure risk), 2.3.3 (reduced-motion fallback for non-essential
+  motion), and 2.2.2 (pausable looping/long motion). What it can't check — whether
+  the motion *feels* right — stays judgment.
 
 ## Outputs
 
-A motion inventory with reduced-motion alternatives per animation. `tool_calls`
-empty today; the reduced-motion commitments are explicit so the builder implements
-and the accessibility-critic verifies them.
+A motion inventory with reduced-motion alternatives per animation, **plus** the
+**measured** `check_motion_safety` result per animation in `tool_calls`. The builder
+implements the safe spec; the accessibility-critic confirms it in the real build.
 
 ## Handoff
 

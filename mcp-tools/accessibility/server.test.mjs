@@ -25,8 +25,13 @@ try {
 
   const { tools } = await client.listTools();
   const names = tools.map((t) => t.name).sort();
-  try { assert.deepEqual(names, ["check_contrast", "check_palette"]); ok("advertises check_contrast + check_palette"); }
-  catch (e) { no("advertises expected tools", e); }
+  try {
+    assert.deepEqual(names, [
+      "check_contrast", "check_motion_safety", "check_palette",
+      "check_reading_level", "check_touch_targets",
+    ]);
+    ok("advertises all 5 truth tools");
+  } catch (e) { no("advertises expected tools", e); }
 
   // check_contrast on a known failing pair
   try {
@@ -65,6 +70,44 @@ try {
     assert.equal(res.structuredContent.summary.failAA, 1);
     ok("check_palette summarises a multi-pair check");
   } catch (e) { no("check_palette works", e); }
+
+  // check_reading_level — plain copy meets grade 6
+  try {
+    const res = await client.callTool({
+      name: "check_reading_level",
+      arguments: { text: "Saved to your reading list.", label: "toast" },
+    });
+    assert.equal(res.structuredContent.meetsTarget, true);
+    assert.ok(res.structuredContent.fleschKincaidGrade <= 6);
+    ok("check_reading_level measures grade of interface copy");
+  } catch (e) { no("check_reading_level works", e); }
+
+  // check_touch_targets — a 20px control fails AA
+  try {
+    const res = await client.callTool({
+      name: "check_touch_targets",
+      arguments: { targets: [
+        { width: 48, height: 48, label: "primary" },
+        { width: 20, height: 20, label: "close" },
+      ] },
+    });
+    assert.equal(res.structuredContent.summary.total, 2);
+    assert.equal(res.structuredContent.summary.failAA, 1);
+    ok("check_touch_targets catches an undersized control");
+  } catch (e) { no("check_touch_targets works", e); }
+
+  // check_motion_safety — a non-essential animation with no reduced-motion fallback is unsafe
+  try {
+    const res = await client.callTool({
+      name: "check_motion_safety",
+      arguments: { animations: [
+        { label: "parallax", durationSeconds: 0.5, reducedMotionFallback: false },
+      ] },
+    });
+    assert.equal(res.structuredContent.summary.unsafe, 1);
+    assert.match(res.content[0].text, /2\.3\.3/);
+    ok("check_motion_safety flags a missing reduced-motion fallback");
+  } catch (e) { no("check_motion_safety works", e); }
 } catch (e) {
   no("server connection", e);
 } finally {

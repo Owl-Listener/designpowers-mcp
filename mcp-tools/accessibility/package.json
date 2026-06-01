@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "node wcag.test.mjs && node server.test.mjs"
+    "test": "node wcag.test.mjs && node readability.test.mjs && node target-size.test.mjs && node motion-safety.test.mjs && node server.test.mjs"
   },
   "license": "MIT",
   "dependencies": {
