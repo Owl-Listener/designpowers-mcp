@@ -182,24 +182,39 @@ VERIFY are in **[SETUP.md](SETUP.md)**.
 
 ### Claude Code
 
-**Option A: Work inside the repo (recommended)**
+Designpowers runs natively in Claude Code over the **same shared core** as the
+Antigravity surface (10 agents, 36 skills, the WCAG truth-layer) — no ADK, no SDK.
 
 ```bash
-git clone https://github.com/Owl-Listener/designpowers.git
-cd designpowers
+git clone https://github.com/Owl-Listener/designpowers-mcp.git
+cd designpowers-mcp
+
+# install the WCAG truth-layer (a Node MCP server)
+cd mcp-tools/accessibility && npm install && cd ../..
 ```
 
-That's it. The `CLAUDE.md` and `.claude/settings.json` in the repo ensure the welcome screen and onboarding run automatically when you start a session.
+Open the repo in Claude Code and **approve the project MCP server** when prompted
+(it's wired in `.mcp.json` — no path edit needed; Claude launches it from the
+project root). The `CLAUDE.md` + SessionStart hook run the welcome/router
+automatically.
 
-**Option B: Copy into your own project**
+- **Verify the truth-layer** before relying on it: run **`/verify-accessibility-tools`**
+  → expect `2.19:1, FAIL AA`.
+- **Run the studio:** **`/design`** drives the full inclusive-design pipeline,
+  director-driven. Checkable claims (contrast) are *measured* via the truth-layer;
+  judgment stays prose.
+
+**Copy into your own project**
 
 ```bash
-git clone https://github.com/Owl-Listener/designpowers.git
-cp -r designpowers/skills/ your-project/skills/
-cp -r designpowers/agents/ your-project/agents/
-cp -r designpowers/hooks/ your-project/hooks/
-cp designpowers/CLAUDE.md your-project/CLAUDE.md
-cp -r designpowers/.claude/ your-project/.claude/
+cp -r designpowers-mcp/skills/ your-project/skills/
+cp -r designpowers-mcp/agents/ your-project/agents/
+cp -r designpowers-mcp/core/ your-project/core/
+cp -r designpowers-mcp/mcp-tools/ your-project/mcp-tools/
+cp -r designpowers-mcp/hooks/ your-project/hooks/
+cp -r designpowers-mcp/.claude/ your-project/.claude/
+cp designpowers-mcp/.mcp.json your-project/.mcp.json
+cp designpowers-mcp/CLAUDE.md your-project/CLAUDE.md
 ```
 
 ### Gemini CLI

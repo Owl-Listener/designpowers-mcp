@@ -1,0 +1,38 @@
+<!doctype html>
+<!--
+  design-builder output, ROUND 2 (fix round).
+  accessibility-critic measured the v1 "Undo" label at 2.29:1 (FAIL AA). Fix: darken
+  --toast-undo from #8aa79a to #3f5e51. The new value was chosen by MEASURING
+  candidates against the surface, not by eye — it lands at 6.31:1 (PASS AA, and AAA).
+  Only this one token changed; the title was already 10.46:1.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Save for later — toast (v2, fixed)</title>
+  <style>
+    :root {
+      --toast-surface: #e8f3ee;   /* mint-tinted success surface (unchanged) */
+      --toast-title:   #1f3d2f;   /* dark green title (unchanged, 10.46:1) */
+      --toast-undo:    #3f5e51;   /* darkened "Undo" — measured 6.31:1, PASS AA */
+    }
+    body { font: 16px/1.5 system-ui, sans-serif; background:#fff; padding:2rem; }
+    .toast {
+      display:flex; align-items:center; gap:.75rem;
+      background:var(--toast-surface);
+      border-radius:12px; padding:.875rem 1.125rem; max-width:24rem;
+      box-shadow:0 2px 10px rgba(0,0,0,.08);
+    }
+    .toast__msg   { color:var(--toast-title); font-weight:600; }
+    .toast__undo  { color:var(--toast-undo); margin-left:auto;
+                    background:none; border:0; font:inherit; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="toast" role="status" aria-live="polite">
+    <span class="toast__msg">Saved to your reading list</span>
+    <button class="toast__undo">Undo</button>
+  </div>
+</body>
+</html>

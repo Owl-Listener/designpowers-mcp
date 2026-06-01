@@ -1,0 +1,30 @@
+name: Check pipeline run
+
+# Runs the end-to-end pipeline proof (examples/pipeline-run): the studio measures
+# its own built output, catches a real WCAG AA fail in v1, and confirms the v2 fix
+# passes — all against the real truth-layer logic. Deterministic; keeps the worked
+# example honest (if a build's colours drift, this fails).
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "examples/pipeline-run/**"
+      - "mcp-tools/**"
+      - ".github/workflows/check-pipeline-run.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "examples/pipeline-run/**"
+      - "mcp-tools/**"
+
+jobs:
+  pipeline-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run the end-to-end pipeline proof
+        run: bash examples/pipeline-run/run.sh
