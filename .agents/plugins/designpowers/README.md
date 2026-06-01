@@ -18,7 +18,7 @@ designpowers/
 ├── hooks.json                    # PreInvocation hook config (the welcome gate)
 ├── hooks/
 │   └── welcome-gate.mjs          # injects "run the welcome first" on a conversation's 1st invocation
-└── skills/                       # 41 discoverable skills (see two kinds below)
+└── skills/                       # 46 discoverable skills (see two kinds below)
     ├── accessibility-critic/     #   agent skill (has .agent-skill marker + tools)
     │   ├── SKILL.md
     │   └── .agent-skill
@@ -38,7 +38,7 @@ The plugin's `skills/` holds **two kinds** of discoverable skill:
    …). Each is a thin adapter that loads its persona (`agents/<name>.md`) and
    contract (`core/agents/<id>/contract.md`) from the shared core and declares the
    truth tools it may call. Marked with a `.agent-skill` file; hand-authored.
-2. **Process-skill pointers (31)** — one per Designpowers process skill
+2. **Process-skill pointers (36)** — one per Designpowers process skill
    (`design-discovery`, `design-taste`, `using-designpowers`, …). Each is a thin
    pointer whose body says "read and follow `skills/<name>/SKILL.md`," so Antigravity
    **discovers** the whole pipeline without duplicating the content that lives once

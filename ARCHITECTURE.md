@@ -14,7 +14,7 @@ core is the single source of truth; each surface is a thin adapter.
 
 | Surface | Status | What it is | Runs inside Antigravity? |
 |---------|--------|-----------|--------------------------|
-| **Antigravity plugin** (`.agents/plugins/designpowers/`) | **PRIMARY** | The ten agents as **Skills** + 31 process-skill pointers, an always-on **rule** (the mandate), a **hook** (`hooks.json` → welcome gate), and `mcp_config.json` wiring the WCAG truth-layer. The `/design` + `/verify-accessibility-tools` **workflows** live at `.agents/workflows/` (workflows aren't a plugin component). | **Yes** — this is the point. |
+| **Antigravity plugin** (`.agents/plugins/designpowers/`) | **PRIMARY** | The ten agents as **Skills** + 36 process-skill pointers, an always-on **rule** (the mandate), a **hook** (`hooks.json` → welcome gate), and `mcp_config.json` wiring the WCAG truth-layer. The `/design` + `/verify-accessibility-tools` **workflows** live at `.agents/workflows/` (workflows aren't a plugin component). | **Yes** — this is the point. |
 | **MCP truth-layer** (`mcp-tools/`) | Durable asset | The WCAG contrast server. Reused **as-is** by every surface. | Yes (loaded via MCP). |
 | **ADK runner** (`runners/gemini/`) | **SECONDARY** | A standalone Google ADK program. **Kept, frozen — do not expand.** | **No** — ADK apps run standalone; Antigravity won't execute them. |
 
