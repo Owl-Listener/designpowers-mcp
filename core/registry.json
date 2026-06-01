@@ -1,18 +1,26 @@
 {
   "core_version": "0.2.0",
-  "description": "Designpowers shared core registry — the single source of truth every surface loads. Surfaces (Antigravity plugin Skills; the secondary ADK runner) contain no design logic; they read this manifest to discover agents, their contracts/personas, the evidence schema they must emit, and the MCP truth-layer servers they need. All paths are relative to the repository root.",
+  "description": "Designpowers shared core registry \u2014 the single source of truth every surface loads. Surfaces (Antigravity plugin Skills; the secondary ADK runner) contain no design logic; they read this manifest to discover agents, their contracts/personas, the evidence schema they must emit, and the MCP truth-layer servers they need. All paths are relative to the repository root.",
   "mcp_servers": {
     "designpowers-accessibility": {
-      "description": "WCAG 2.2 colour-contrast truth layer. Returns measured ratios and AA/AAA pass/fail — evidence, not estimates.",
+      "description": "WCAG truth layer: colour contrast (2.2), reading level (3.1.5), touch-target size (2.5.8/2.5.5), and motion safety (2.2.2/2.3.1/2.3.3). Returns measured evidence, not estimates.",
       "command": "node",
-      "args": ["mcp-tools/accessibility/server.js"],
+      "args": [
+        "mcp-tools/accessibility/server.js"
+      ],
       "cwd": ".",
-      "tools": ["check_contrast", "check_palette"]
+      "tools": [
+        "check_contrast",
+        "check_palette",
+        "check_reading_level",
+        "check_touch_targets",
+        "check_motion_safety"
+      ]
     }
   },
   "agents": {
     "design-strategist": {
-      "description": "Upstream thinking — flows, IA, journey maps, personas, principles, direction.",
+      "description": "Upstream thinking \u2014 flows, IA, journey maps, personas, principles, direction.",
       "contract": "core/agents/design-strategist/contract.md",
       "persona": "agents/design-strategist.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
@@ -24,7 +32,9 @@
       "contract": "core/agents/design-scout/contract.md",
       "persona": "agents/design-scout.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
-      "mcp_servers": ["designpowers-accessibility"],
+      "mcp_servers": [
+        "designpowers-accessibility"
+      ],
       "phase": "research"
     },
     "inspiration-scout": {
@@ -40,7 +50,9 @@
       "contract": "core/agents/design-lead/contract.md",
       "persona": "agents/design-lead.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
-      "mcp_servers": ["designpowers-accessibility"],
+      "mcp_servers": [
+        "designpowers-accessibility"
+      ],
       "phase": "design"
     },
     "motion-designer": {
@@ -48,7 +60,9 @@
       "contract": "core/agents/motion-designer/contract.md",
       "persona": "agents/motion-designer.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
-      "mcp_servers": [],
+      "mcp_servers": [
+        "designpowers-accessibility"
+      ],
       "phase": "design"
     },
     "content-writer": {
@@ -56,7 +70,9 @@
       "contract": "core/agents/content-writer/contract.md",
       "persona": "agents/content-writer.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
-      "mcp_servers": [],
+      "mcp_servers": [
+        "designpowers-accessibility"
+      ],
       "phase": "content"
     },
     "design-builder": {
@@ -64,7 +80,9 @@
       "contract": "core/agents/design-builder/contract.md",
       "persona": "agents/design-builder.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
-      "mcp_servers": ["designpowers-accessibility"],
+      "mcp_servers": [
+        "designpowers-accessibility"
+      ],
       "phase": "build"
     },
     "accessibility-critic": {
@@ -72,12 +90,14 @@
       "contract": "core/agents/accessibility-critic/contract.md",
       "persona": "agents/accessibility-reviewer.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
-      "mcp_servers": ["designpowers-accessibility"],
+      "mcp_servers": [
+        "designpowers-accessibility"
+      ],
       "phase": "review",
       "model_hints": {
         "needs_vision": true,
         "needs_large_context": true,
-        "why": "Vision lets the critic read colours off a screenshot to propose pairs; large context lets it ingest a whole DESIGN.md palette. Both only PROPOSE what to measure — the MCP tool supplies the truth."
+        "why": "Vision lets the critic read colours off a screenshot to propose pairs; large context lets it ingest a whole DESIGN.md palette. Both only PROPOSE what to measure \u2014 the MCP tool supplies the truth."
       },
       "conformance": [
         "core/conformance/scenarios/accessibility-critic.contrast.json"
@@ -88,15 +108,19 @@
       "contract": "core/agents/design-critic/contract.md",
       "persona": "agents/design-critic.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
-      "mcp_servers": ["designpowers-accessibility"],
+      "mcp_servers": [
+        "designpowers-accessibility"
+      ],
       "phase": "review"
     },
     "heuristic-evaluator": {
-      "description": "Nielsen's 10 heuristics + cognitive walkthroughs. Usability judgment; no truth tool yet.",
+      "description": "Nielsen's 10 heuristics + cognitive walkthroughs; measures touch-target size (2.5.8) via the truth tool.",
       "contract": "core/agents/heuristic-evaluator/contract.md",
       "persona": "agents/heuristic-evaluator.md",
       "evidence_schema": "core/schemas/evidence.schema.json",
-      "mcp_servers": [],
+      "mcp_servers": [
+        "designpowers-accessibility"
+      ],
       "phase": "review"
     }
   }

@@ -13,10 +13,22 @@ Designpowers' workflow is mostly prose an LLM performs. Most of that is *judgmen
 
 ## Tools
 
-- **`check_contrast`** — one foreground/background pair → ratio + AA/AAA pass/fail. `textSize: "large"` uses the 3.0 threshold (≥18pt, or ≥14pt bold, and UI components).
-- **`check_palette`** — many pairs at once (a whole screen or a `DESIGN.md` palette) → per-pair results + a pass/fail summary.
+Five WCAG truth tools. Each returns human-readable text **and** machine-readable
+`structuredContent`.
 
-Both return human-readable text **and** `structuredContent` (machine-readable: `ratio`, `passAA`, `passAAA`, thresholds).
+| Tool | WCAG | Measures |
+|------|------|----------|
+| **`check_contrast`** | 1.4.3 / 1.4.11 | one fg/bg pair → ratio + AA/AAA. `textSize:"large"` uses the 3.0 threshold. |
+| **`check_palette`** | 1.4.3 | many pairs at once (a screen or `DESIGN.md` palette) → per-pair + summary. |
+| **`check_reading_level`** | 3.1.5 | Flesch–Kincaid grade of copy vs a target (default 6). A reproducible *standard estimate* (exact word/sentence counts; standard syllable heuristic). |
+| **`check_touch_targets`** | 2.5.8 / 2.5.5 | rendered size (CSS px) of interactive controls → AA (24×24) / AAA (44×44). Exact geometry. |
+| **`check_motion_safety`** | 2.2.2 / 2.3.1 / 2.3.3 | declared animation props → flashes/sec (≤3), reduced-motion fallback, pausability. |
+
+> **Honesty:** contrast and target-size are exact math; motion-safety checks
+> declared properties against thresholds; reading-level is a *standard estimate*
+> (the syllable step is the well-known heuristic). All are reproducible and far
+> better than a model eyeballing — reading-level is labelled an estimate so we never
+> overclaim.
 
 ## Install
 
