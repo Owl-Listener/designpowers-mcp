@@ -222,15 +222,17 @@ vary: feed both runners the same scenario input and assert the **evidence** out 
 identical (the prose may differ; the measured facts may not).
 
 - Scenarios live in `core/conformance/scenarios/` as input → expected-evidence
-  pairs. One is included as the format-defining example
-  (`accessibility-critic.contrast.json`).
-- The plan: a shared conformance harness runs every scenario against **every**
-  runner and asserts the evidence matches. The Gemini runner already ships a
-  deterministic test that exercises this for the accessibility critic
-  (`runners/gemini/tests/test_evidence_path.py`); it is the seed of the suite.
-- **The full cross-runner suite is intentionally deferred** until the Claude
-  runner exists — there is nothing to compare against yet. This section is the
-  note that it is coming; the build happens when the second runner lands.
+  pairs — one per measured dimension (contrast, reading-level, touch-target,
+  motion-safety), referenced from each agent's `conformance` array in the registry.
+- **The suite is BUILT:** `scripts/conformance.mjs` (CI: `check-conformance.yml`)
+  runs every scenario against **every surface's truth-layer wiring** — the
+  Antigravity plugin (`mcp_config.json`), the Claude Code surface (`.mcp.json`), and
+  the registry-canonical wiring — over real MCP/stdio, and asserts the measured
+  evidence is **byte-identical** across all of them. It was verified to actually
+  catch drift (a tampered surface that rounded 2.19→2.2 fails the run), so it is a
+  guarantee, not a formality.
+- The Gemini runner also ships a deterministic per-runner evidence test
+  (`runners/gemini/tests/test_evidence_path.py`) — the original seed of this suite.
 
 ## Why Gemini ADK is the reference build
 
@@ -263,5 +265,8 @@ One vertical slice, end to end:
   call needed). A live one-shot entrypoint is provided for when a Gemini API key
   is present.
 
-Deliberately **not** in this slice: the other nine agents, the Claude runner, and
-the full conformance suite. See the rules above for why each waits.
+> *Historical note:* the above described the very first slice (one agent, the ADK
+> runner). Since then the full picture has been built — all ten agents on the
+> Antigravity and Claude Code surfaces, four truth tools, and the cross-surface
+> conformance suite. This section is kept for the design rationale, not as a
+> statement of current scope.

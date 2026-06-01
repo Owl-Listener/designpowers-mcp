@@ -1,0 +1,15 @@
+{
+  "scenario": "content-writer/reading-level",
+  "agent": "content-writer",
+  "description": "Two copy strings: a plain confirmation (meets grade 6) and a dense one (above it). Every surface must compute the same grade and meets-target verdict.",
+  "tool": "check_reading_level",
+  "input": { "text": "Saved to your reading list.", "targetGrade": 6, "label": "toast" },
+  "expected_evidence": {
+    "tool": "check_reading_level",
+    "assertions": [
+      { "path": "meetsTarget", "equals": true },
+      { "path": "wordCount", "equals": 5 },
+      { "path": "sentenceCount", "equals": 1 }
+    ]
+  }
+}

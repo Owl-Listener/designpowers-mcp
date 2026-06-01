@@ -1,10 +1,27 @@
 # Conformance scenarios (anti-drift)
 
-> **The full cross-runner suite is intentionally not built yet.** There is only
-> one runner today (Gemini ADK), so there is nothing to compare it against. This
-> directory holds the *format* and the *first scenario* so the shape is fixed; the
-> harness that runs every scenario against every runner lands with the second
-> runner (Claude Agent SDK). See `ARCHITECTURE.md` → "Anti-drift via conformance".
+> **The cross-surface suite is BUILT** (`scripts/conformance.mjs`, CI:
+> `check-conformance.yml`). It runs every scenario here against **every surface's**
+> truth-layer wiring — the Antigravity plugin (`mcp_config.json`), the Claude Code
+> surface (`.mcp.json`), and the registry-canonical wiring — over real MCP/stdio,
+> and asserts the measured evidence is **byte-identical** across all of them. If a
+> surface ever drifts, CI fails. (Verified to actually catch drift, not just pass.)
+> See `ARCHITECTURE.md` → "Anti-drift via conformance".
+
+## Scenarios
+
+One per measured dimension (each pins the tool it names):
+
+| Scenario | Tool | Agent |
+|----------|------|-------|
+| `accessibility-critic.contrast.json` | `check_palette` | accessibility-critic |
+| `content-writer.reading-level.json` | `check_reading_level` | content-writer |
+| `heuristic-evaluator.touch-target.json` | `check_touch_targets` | heuristic-evaluator |
+| `motion-designer.motion-safety.json` | `check_motion_safety` | motion-designer |
+
+Add a scenario: drop a JSON file here (with a `tool`, `input`, and
+`expected_evidence`), and reference it from the agent's `conformance` array in
+`core/registry.json`. The suite discovers it automatically.
 
 ## Why this exists
 
