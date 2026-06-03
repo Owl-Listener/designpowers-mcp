@@ -29,29 +29,45 @@ Antigravity path.
 
 ---
 
-## 1. Get the repo and install the truth-layer
+## 1. Get the repo
 
 ```bash
 git clone https://github.com/Owl-Listener/designpowers-mcp.git
-cd designpowers-mcp/mcp-tools/accessibility
-npm install          # installs the MCP SDK for the WCAG server
-npm test             # expect: 16/16 green (pure WCAG logic + live MCP round-trip)
+cd designpowers-mcp
 ```
 
 ---
 
-## 2. Point the plugin's MCP config at your absolute repo path
+## 2. Run the automated setup (recommended)
 
-Antigravity launches the MCP server from an unspecified working directory, so the
-server path **must be absolute**. The plugin ships with a `<DESIGNPOWERS_ROOT>`
-placeholder; fill it with a one-liner from the repo root:
+One script does everything: installs the truth-layer's Node deps, injects this
+repo's absolute path into the plugin's MCP config, asks whether to install the
+plugin locally or globally, and runs the validation + a live MCP handshake so you
+see green **before** opening Antigravity. Portable across macOS (bash 3.2) and Linux.
 
 ```bash
-# from the repo root (designpowers-mcp/)
+bash scripts/setup.sh
+```
+
+Expect it to finish with **"All green"** and the measured handshake
+(`2.19:1, FAIL AA`). Then skip to step 4 (VERIFY) / step 3 (load the plugin).
+
+<details>
+<summary><b>Manual setup (if you'd rather do it by hand)</b></summary>
+
+```bash
+# install the WCAG truth-layer (a Node MCP server)
+cd mcp-tools/accessibility && npm install && npm test && cd ../..
+
+# fill the absolute repo path into the plugin's MCP config
+# (Antigravity launches the server from an unspecified cwd, so the path must be absolute)
 ROOT="$(pwd)"
 sed -i.bak "s|<DESIGNPOWERS_ROOT>|$ROOT|g" .agents/plugins/designpowers/mcp_config.json
 cat .agents/plugins/designpowers/mcp_config.json   # confirm the path is now absolute
 ```
+
+`sed -i.bak` works on both macOS (BSD sed) and Linux (GNU sed).
+</details>
 
 macOS/Linux: the above works as-is. (On Windows, set the path by hand — use forward
 slashes, e.g. `C:/Users/you/designpowers-mcp/mcp-tools/accessibility/server.js`.)

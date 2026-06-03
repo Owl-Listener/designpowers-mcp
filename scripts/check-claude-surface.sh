@@ -41,7 +41,10 @@ grep -q "designpowers-accessibility" "$ROOT/CLAUDE.md" && ok "references the tru
 grep -q "using-designpowers" "$ROOT/CLAUDE.md" && ok "welcome/router still enforced" || bad "CLAUDE.md lost the welcome enforcement"
 
 echo ""; echo "[4] Every registry agent has a real persona file Claude dispatches:"
-mapfile -t AGENTS < <(jq_node "$REG" "console.log(Object.keys(d.agents).join('\n'))")
+# macOS bash 3.2 has no mapfile; populate with a portable while-read loop.
+AGENTS=()
+while IFS= read -r line; do [ -n "$line" ] && AGENTS+=("$line"); done \
+  < <(jq_node "$REG" "console.log(Object.keys(d.agents).join('\n'))")
 for a in "${AGENTS[@]}"; do
   persona=$(jq_node "$REG" "console.log(d.agents['$a'].persona)")
   [ -f "$ROOT/$persona" ] && ok "$a -> $persona" || bad "$a: persona missing ($persona)"

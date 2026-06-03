@@ -30,6 +30,10 @@ echo "Designpowers Antigravity plugin check"
 # Helper: read JSON via node
 jq_node() { node -e "const d=require('$1');$2"; }
 
+# Note: macOS ships bash 3.2, which has no `mapfile`/`readarray` (bash 4.0+). We
+# populate arrays with a portable `while read` loop reading from a process
+# substitution (which keeps the loop in the current shell, so the array persists).
+
 WORKFLOWS="$ROOT/.agents/workflows"
 
 echo ""; echo "[1] Plugin marker + wiring files (Skills/Rules/MCP/Hooks only — per Antigravity plugin spec):"
@@ -49,10 +53,14 @@ done
 if [ -d "$PLUGIN/workflows" ]; then bad "workflows/ found inside the plugin — Antigravity won't discover these; move to .agents/workflows/"; else ok "no stray workflows/ inside the plugin"; fi
 
 # Tools the MCP server advertises (from the registry)
-mapfile -t SERVER_TOOLS < <(jq_node "$REG" "console.log((d.mcp_servers['designpowers-accessibility'].tools||[]).join('\n'))")
+SERVER_TOOLS=()
+while IFS= read -r line; do [ -n "$line" ] && SERVER_TOOLS+=("$line"); done \
+  < <(jq_node "$REG" "console.log((d.mcp_servers['designpowers-accessibility'].tools||[]).join('\n'))")
 
 echo ""; echo "[3] Registry agents -> core contract + persona + plugin Skill:"
-mapfile -t AGENTS < <(jq_node "$REG" "console.log(Object.keys(d.agents).join('\n'))")
+AGENTS=()
+while IFS= read -r line; do [ -n "$line" ] && AGENTS+=("$line"); done \
+  < <(jq_node "$REG" "console.log(Object.keys(d.agents).join('\n'))")
 echo "  (${#AGENTS[@]} agents in registry)"
 for a in "${AGENTS[@]}"; do
   contract=$(jq_node "$REG" "console.log(d.agents['$a'].contract)")
@@ -86,7 +94,9 @@ echo ""; echo "[5] Skill tool declarations are real server tools:"
 for d in "$PLUGIN"/skills/*/; do
   s=$(basename "$d"); skill="$d/SKILL.md"
   # tools are listed as '  - toolname' under a 'tools:' key in frontmatter
-  mapfile -t declared < <(awk '/^tools:/{f=1;next} f&&/^[a-zA-Z]/{f=0} f&&/^ *- /{gsub(/^ *- */,"");print}' "$skill")
+  declared=()
+  while IFS= read -r line; do [ -n "$line" ] && declared+=("$line"); done \
+    < <(awk '/^tools:/{f=1;next} f&&/^[a-zA-Z]/{f=0} f&&/^ *- /{gsub(/^ *- */,"");print}' "$skill")
   for t in "${declared[@]:-}"; do
     [ -z "$t" ] && continue
     if printf '%s\n' "${SERVER_TOOLS[@]}" | grep -qx "$t"; then
