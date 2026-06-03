@@ -45,6 +45,12 @@ repo's absolute path into the plugin's MCP config, asks whether to install the
 plugin locally or globally, and runs the validation + a live MCP handshake so you
 see green **before** opening Antigravity. Portable across macOS (bash 3.2) and Linux.
 
+> **One prerequisite: Node.js** (v18+, tested on 22). The truth-layer is a small
+> local Node server, so Node must be installed. If you don't have it, grab the LTS
+> installer from [nodejs.org](https://nodejs.org) (~2 min) — `setup.sh` detects a
+> missing/old Node and prints exact, OS-specific install steps, so you can run it
+> first to check.
+
 ```bash
 bash scripts/setup.sh
 ```

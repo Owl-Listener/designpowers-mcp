@@ -23,14 +23,58 @@ err()  { printf '  \033[31m✗\033[0m %s\n' "$*" >&2; }
 say "Designpowers setup"
 say "Repo: $ROOT"
 
+# --- print OS-tailored Node install guidance (we do NOT auto-install a runtime:
+#     it needs admin rights, varies by OS, and silently mutating someone's machine
+#     from a setup script is the wrong default). Instead we make the unblock easy. ---
+node_install_help() {
+  say ""
+  say "  Designpowers needs Node.js (it runs the WCAG truth-layer — a small local"
+  say "  server). It's a one-time, ~2-minute install. Pick whichever fits:"
+  say ""
+  case "$(uname -s)" in
+    Darwin)
+      say "  macOS:"
+      say "    • Easiest — download the installer (.pkg) from  https://nodejs.org  (get the LTS)."
+      say "    • Or with Homebrew, if you have it:   brew install node"
+      ;;
+    Linux)
+      say "  Linux:"
+      say "    • Download from  https://nodejs.org  (LTS), or use your package manager:"
+      say "        Debian/Ubuntu:  sudo apt-get install -y nodejs npm"
+      say "        Fedora:         sudo dnf install -y nodejs"
+      say "    • Or nvm (no admin needed):  https://github.com/nvm-sh/nvm"
+      ;;
+    *)
+      say "  Download the LTS installer from  https://nodejs.org  for your system."
+      ;;
+  esac
+  say ""
+  say "  After installing, open a NEW terminal (so PATH refreshes) and re-run:"
+  say "      bash scripts/setup.sh"
+  say ""
+  say "  Verify it's there with:   node --version    (expect v18 or newer)"
+}
+
 # --- 1. prerequisites ---
 step "Checking prerequisites"
 if ! command -v node >/dev/null 2>&1; then
-  err "Node.js not found on PATH. Install Node 18+ (Designpowers tested on 22) and re-run."
+  err "Node.js isn't installed (or isn't on your PATH)."
+  node_install_help
+  exit 1
+fi
+# Node present but ancient? warn — the MCP SDK needs a modern runtime.
+node_major="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)"
+if [ "${node_major:-0}" -lt 18 ] 2>/dev/null; then
+  err "Found node $(node --version), but Designpowers needs Node 18+ (tested on 22)."
+  node_install_help
   exit 1
 fi
 ok "node $(node --version)"
-command -v npm >/dev/null 2>&1 || { err "npm not found on PATH."; exit 1; }
+if ! command -v npm >/dev/null 2>&1; then
+  err "npm not found on PATH (it normally ships with Node)."
+  node_install_help
+  exit 1
+fi
 ok "npm $(npm --version)"
 
 # --- 2. install the WCAG truth-layer (Node MCP server) ---
